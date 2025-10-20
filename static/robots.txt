@@ -1,0 +1,36 @@
+# Robots.txt для ОНП «Машини та обладнання в агропромисловому комплексі»
+# Дніпровський державний аграрно-економічний університет
+
+# Разрешить всем поисковым роботам индексировать сайт
+User-agent: *
+Disallow: /admin/
+Disallow: /netlify/
+Disallow: /_gatsby/
+Disallow: /static/admin/
+Disallow: /.netlify/
+
+# Специальные правила для основных поисковых систем
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot  
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+# Блокируем плохих ботов
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+# Указываем расположение sitemap
+Sitemap: https://science.netlify.app/sitemap.xml
+
+# Время задержки между запросами (в секундах)
+Crawl-delay: 1

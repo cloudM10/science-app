@@ -1,0 +1,63 @@
+import React from "react";
+import { graphql } from "gatsby";
+import Layout from "../components/layout";
+import PostList from "../components/post-list";
+import Intro from "../components/intro";
+
+const ConferencesPage = ({ data }) => {
+    const conferences = data.allMarkdownRemark.nodes;
+    const intro = data.markdownRemark.html;
+
+    return (
+        <Layout>
+            <Intro
+                dangerouslySetInnerHTML={{
+                    __html: intro,
+                }}
+            />
+
+            <PostList posts={conferences} />
+        </Layout>
+    );
+};
+
+export default ConferencesPage;
+
+export const pageQuery = graphql`
+    query ($slug: String!) {
+        site {
+            siteMetadata {
+                title
+            }
+        }
+        allMarkdownRemark(
+            filter: { fields: { contentType: { eq: "conferences" } } }
+            sort: { order: DESC, fields: frontmatter___date }
+            limit: 9
+        ) {
+            nodes {
+                fields {
+                    slug
+                }
+                frontmatter {
+                    title
+                    date(formatString: "MMMM DD, YYYY", locale: "uk")
+                    social_image {
+                        childImageSharp {
+                            gatsbyImageData(
+                                placeholder: BLURRED
+                                formats: PNG
+                                height: 400
+                            )
+                        }
+                    }
+                    description
+                }
+                timeToRead
+            }
+        }
+        markdownRemark(fields: { slug: { eq: $slug } }) {
+            html
+        }
+    }
+`;

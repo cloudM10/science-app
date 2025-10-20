@@ -1,0 +1,406 @@
+backend:
+    name: git-gateway
+    branch: main
+    commit_messages:
+        create: "Create {{collection}} “{{slug}}”"
+        update: "Update {{collection}} “{{slug}}”"
+        delete: "Delete {{collection}} “{{slug}}”"
+        uploadMedia: "[skip ci] Upload “{{path}}”"
+        deleteMedia: "[skip ci] Delete “{{path}}”"
+
+local_backend: true
+
+media_folder: "static/media"
+public_folder: "/media"
+
+editor:
+    preview: false
+
+collections: 
+    - name: "pages"
+      label: "[Сторінки]"
+      folder: "content/pages"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - {
+                label: "Шаблон сторінки",
+                name: "template",
+                widget: "string",
+                default: "page-template",
+            }
+          - { label: "Назва сторінки", name: "title", widget: "string" }
+
+          - { label: "Контент", name: "body", widget: "markdown" }
+          - {
+                label: "Зображення профілю",
+                name: "profile_image",
+                widget: "image",
+                required: false,
+                hint: "Для зображення аватара на сторінці Про нас.",
+            }
+
+    - name: "news"
+      label: "Новини"
+      folder: "content/news"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
+
+    - name: "quick-access-links"
+      label: "Швидкі посилання"
+      folder: "content/quick-access-links"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+            - { label: "Унікальний ID", name: "id", widget: "number", hint: "Для впорядкування посилань.", unique: true }
+            - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+            - { label: "Назва посилання", name: "title", widget: "string" }
+            - {
+                    label: "Зображення посилання",
+                    name: "link_image",
+                    widget: "image",
+                    required: false,
+                    hint: "Для зображення посилання в Швидких посиланнях.",
+                }
+            - { label: "Посилання", name: "link", widget: "string" }
+
+    - name: "team"
+      label: "Наша Команда"
+      folder: "content/team"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+            - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+            - {
+                    label: Фотографія профілю,
+                    name: "profile_image",
+                    widget: "image",
+                    required: true,
+                }
+            - { label: "Повне ім'я", name: "fullName", widget: "string" }
+            - { label: "Досягнення", name: "achievements", widget: "string" }
+
+    - name: "applicants"
+      label: "Абітурієнту"
+      folder: "content/applicants"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
+
+    - name: "bachelors"
+      label: "Бакалаври"
+      folder: "content/bachelors"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
+
+    - name: "masters"
+      label: "Магістри"
+      folder: "content/masters"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
+
+    - name: "collaboration"
+      label: "Співпраця"
+      folder: "content/collaboration"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
+    
+    - name: "academic-integrity"
+      label: "Академічна доброчесність"
+      folder: "content/academic-integrity"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
+    
+    - name: "educational-work"
+      label: "Виховна робота"
+      folder: "content/educational-work"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
+
+    - name: "internships"
+      label: "Практична підготовка"
+      folder: "content/internships"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
+    
+    - name: "research-work"
+      label: "Науково-дослідна робота"
+      folder: "content/research-work"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
+
+    - name: "conferences"
+      label: "Конференції"
+      folder: "content/conferences"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
+
+    - name: "material-technical-support"
+      label: "Матеріально-технічне забезпечення"
+      folder: "content/material-technical-support"
+      create: true
+      slug: "{{fileName}}"
+      fields:
+          - { label: "Назва файлу", name: "fileName", widget: "string", hint: "Пишіть англійсткою мовою або транскрипцією", required: true }
+          - { label: "Назва публікації", name: "title", widget: "string" }
+          - {
+                label: "Дата",
+                name: "date",
+                widget: "datetime",
+                date_format: "YYYY-MM-DD",
+                time_format: "HH:mm",
+                format: "YYYY-MM-DD HH:mm",
+            }
+          - {
+                label: "Соціальне зображення",
+                name: "social_image",
+                widget: "image",
+                required: false,
+            }
+          - { label: "Опис", name: "description", widget: "text", required: false }
+          - {
+                label: "Контент",
+                name: "body",
+                widget: "markdown",
+                hint: "Місце для основного контенту.",
+            }
