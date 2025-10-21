@@ -17,6 +17,26 @@ function extractAccessToken(token) {
     return undefined;
 }
 
+function buildHtmlResponse(provider, message, content) {
+    try {
+        return generateLoginScript(provider, message, content);
+    } catch (originError) {
+        console.error("Invalid ORIGINS configuration", originError);
+        return `<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Authentication ${message}</title>
+</head>
+<body>
+    <pre style="color:#b91c1c;font-family:monospace;white-space:pre-wrap;">
+CMS OAuth configuration error: ${originError.message}
+    </pre>
+</body>
+</html>`;
+    }
+}
+
 module.exports = async (req, res) => {
     if (req.method !== "GET") {
         res.setHeader("Allow", "GET");
@@ -45,7 +65,7 @@ module.exports = async (req, res) => {
             throw new Error("Unable to extract access token from response");
         }
 
-        const html = generateLoginScript(oauthProvider, "success", {
+        const html = buildHtmlResponse(oauthProvider, "success", {
             token: accessToken,
             provider: oauthProvider,
         });
@@ -56,9 +76,11 @@ module.exports = async (req, res) => {
     } catch (error) {
         console.error("OAuth callback error", error);
         const payload = JSON.stringify({ message: error.message });
-        const html = generateLoginScript(oauthProvider, "error", payload);
+        const html = buildHtmlResponse(oauthProvider, "error", payload);
         res.setHeader("Content-Type", "text/html; charset=utf-8");
         res.setHeader("Cache-Control", "no-store");
-        res.status(200).send(html);
+        const statusCode =
+            error && error.message && /config/i.test(error.message) ? 500 : 200;
+        res.status(statusCode).send(html);
     }
 };
