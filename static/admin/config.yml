@@ -2,7 +2,7 @@ backend:
   name: github
   repo: cloudM10/science-app
   branch: main
-  base_url: "https://science-app-umber.vercel.app/"
+  base_url: "https://science-app-umber.vercel.app"
   auth_endpoint: api/auth
   cms_label_prefix: cms/
   commit_messages:
