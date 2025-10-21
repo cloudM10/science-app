@@ -116,6 +116,8 @@ module.exports = function generateLoginScript(oauthProvider, message, content) {
     var wildcardRegexes = wildcardSources.map(function(source) {
         return new RegExp(source);
     });
+    var openerWindow = typeof window !== 'undefined' ? window.opener : null;
+    var hasOpener = !!(openerWindow && typeof openerWindow.postMessage === 'function');
 
     function matchesOrigin(elem) {
         if (exactOrigins.indexOf(elem) !== -1) {
@@ -137,14 +139,32 @@ module.exports = function generateLoginScript(oauthProvider, message, content) {
             console.log('Invalid origin:', e.origin);
             return;
         }
-        window.opener.postMessage(
-            'authorization:${oauthProvider}:${message}:${sanitizedPayload}',
-            e.origin
-        );
+        if (hasOpener) {
+            openerWindow.postMessage(
+                'authorization:${oauthProvider}:${message}:${sanitizedPayload}',
+                e.origin
+            );
+            try {
+                window.close();
+            } catch (closeError) {
+                console.warn('Unable to close OAuth window automatically', closeError);
+            }
+        } else {
+            console.warn('OAuth callback reached without an opener window. Returning to admin.');
+            try {
+                window.location.replace('/admin/#/');
+            } catch (redirectError) {
+                console.error('Unable to redirect back to admin UI', redirectError);
+            }
+        }
     }
 
     window.addEventListener('message', receiveMessage, false);
-    window.opener.postMessage('authorizing:${oauthProvider}', '*');
+    if (hasOpener) {
+        openerWindow.postMessage('authorizing:${oauthProvider}', '*');
+    } else {
+        console.warn('No opener window detected for OAuth handshake.');
+    }
 })();
 </script>
 </body>
