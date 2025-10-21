@@ -1,9 +1,6 @@
 backend:
-    name: github
-    repo: cloudM10/science-app
-    branch: main
-    base_url: https://science-app-umber.vercel.app
-    auth_endpoint: /auth
+    name: git-gateway
+    branch: deploy_netlify
     commit_messages:
         create: "Create {{collection}} “{{slug}}”"
         update: "Update {{collection}} “{{slug}}”"
