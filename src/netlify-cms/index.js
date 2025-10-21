@@ -11,7 +11,9 @@ CMS.init({
             repo: "cloudM10/science-app",
             branch: "main",
             auth_type: "implicit",
-            base_url: process.env.GATSBY_NETLIFY_CMS_BASE_URL || "https://science-app-umber.vercel.app/api",
+            base_url:
+                process.env.GATSBY_NETLIFY_CMS_BASE_URL ||
+                "https://science-app-umber.vercel.app/api",
             auth_endpoint: "auth",
         },
         media_folder: "static/uploads",

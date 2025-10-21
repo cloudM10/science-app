@@ -15,6 +15,7 @@ A Minimal & Beautiful Gatsby Personal Blog With Nice Glassmorphism UI.
 ## Local Install
 
 yarn start
+
 ```bash
 # 1. Clone the repository
 git clone https://github.com/cloudM10/science-app
@@ -77,15 +78,15 @@ The `/api/auth` and `/api/callback` serverless functions embed the behaviour of 
 
 Add these variables in the Vercel dashboard (Project Settings → Environment Variables):
 
-| Variable | Required | Description |
-| --- | --- | --- |
-| `OAUTH_CLIENT_ID` | ✅ | Client ID from your GitHub OAuth App. |
-| `OAUTH_CLIENT_SECRET` | ✅ | Client Secret from your GitHub OAuth App. |
-| `ORIGINS` | ✅ | Comma-separated list of allowed origins **without protocol**, e.g. `science-app-umber.vercel.app,www.example.com,localhost:8000`. Wildcards (`*.example.com`) are supported. |
-| `REDIRECT_URL` | ✅ | Public callback URL, e.g. `https://science-app-umber.vercel.app/api/callback`. |
-| `SCOPES` | ⛔️ (optional) | Override the default GitHub scopes (`repo,user`). |
-| `AUTH_TARGET` | ⛔️ (optional) | Set to `_blank` to force the login window to open in a new tab. |
-| `GATSBY_NETLIFY_CMS_BASE_URL` | ⛔️ (optional) | Override the OAuth base URL used by the CMS client. Defaults to `https://science-app-umber.vercel.app/api`. |
+| Variable                      | Required       | Description                                                                                                                                                                  |
+| ----------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `OAUTH_CLIENT_ID`             | ✅             | Client ID from your GitHub OAuth App.                                                                                                                                        |
+| `OAUTH_CLIENT_SECRET`         | ✅             | Client Secret from your GitHub OAuth App.                                                                                                                                    |
+| `ORIGINS`                     | ✅             | Comma-separated list of allowed origins **without protocol**, e.g. `science-app-umber.vercel.app,www.example.com,localhost:8000`. Wildcards (`*.example.com`) are supported. |
+| `REDIRECT_URL`                | ✅             | Public callback URL, e.g. `https://science-app-umber.vercel.app/api/callback`.                                                                                               |
+| `SCOPES`                      | ⛔️ (optional) | Override the default GitHub scopes (`repo,user`).                                                                                                                            |
+| `AUTH_TARGET`                 | ⛔️ (optional) | Set to `_blank` to force the login window to open in a new tab.                                                                                                              |
+| `GATSBY_NETLIFY_CMS_BASE_URL` | ⛔️ (optional) | Override the OAuth base URL used by the CMS client. Defaults to `https://science-app-umber.vercel.app/api`.                                                                  |
 
 Deployments automatically pick up the new values—redeploy if you change them.
 

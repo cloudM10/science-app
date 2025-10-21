@@ -1,4 +1,5 @@
-const REQUIRED_ORIGIN_PATTERN = /^((\*|([\w_-]{2,}))\.)*(([\w_-]{2,})\.)+(\w{2,})(,((\*|([\w_-]{2,}))\.)*(([\w_-]{2,})\.)+(\w{2,}))*$/;
+const REQUIRED_ORIGIN_PATTERN =
+    /^((\*|([\w_-]{2,}))\.)*(([\w_-]{2,})\.)+(\w{2,})(,((\*|([\w_-]{2,}))\.)*(([\w_-]{2,})\.)+(\w{2,}))*$/;
 
 function parseOrigins() {
     const rawOrigins = process.env.ORIGINS;
@@ -12,7 +13,10 @@ function parseOrigins() {
         );
     }
 
-    return rawOrigins.split(",").map((origin) => origin.trim()).filter(Boolean);
+    return rawOrigins
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean);
 }
 
 function sanitizeForSingleQuotedString(value) {
@@ -21,7 +25,8 @@ function sanitizeForSingleQuotedString(value) {
 
 module.exports = function generateLoginScript(oauthProvider, message, content) {
     const origins = parseOrigins();
-    const payload = typeof content === "string" ? content : JSON.stringify(content);
+    const payload =
+        typeof content === "string" ? content : JSON.stringify(content);
     const sanitizedPayload = sanitizeForSingleQuotedString(payload);
 
     return `<!doctype html>

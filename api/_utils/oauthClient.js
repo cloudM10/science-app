@@ -20,7 +20,8 @@ const config = {
     auth: {
         tokenHost: process.env.GIT_HOSTNAME || "https://github.com",
         tokenPath: process.env.OAUTH_TOKEN_PATH || "/login/oauth/access_token",
-        authorizePath: process.env.OAUTH_AUTHORIZE_PATH || "/login/oauth/authorize",
+        authorizePath:
+            process.env.OAUTH_AUTHORIZE_PATH || "/login/oauth/authorize",
     },
 };
 
@@ -50,7 +51,10 @@ function getDefaultBasePath() {
 }
 
 function getBaseUrl(req) {
-    const explicitBase = process.env.SERVER_BASE_URL || process.env.BASE_URL || process.env.EXTERNAL_BASE_URL;
+    const explicitBase =
+        process.env.SERVER_BASE_URL ||
+        process.env.BASE_URL ||
+        process.env.EXTERNAL_BASE_URL;
     if (explicitBase) {
         return removeTrailingSlash(explicitBase);
     }
