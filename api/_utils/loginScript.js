@@ -77,6 +77,27 @@ function sanitizeForSingleQuotedString(value) {
 
 module.exports = function generateLoginScript(oauthProvider, message, content) {
     const origins = parseOrigins();
+
+    const exactOrigins = [];
+    const wildcardSources = [];
+
+    const escapeRegexSegment = (segment) =>
+        segment.replace(/[-/\\^$+?.()|[\]{}]/g, "\\$&");
+
+    origins.forEach((origin) => {
+        if (origin.includes("*")) {
+            const patternSegments = origin
+                .split(".")
+                .map((segment) =>
+                    segment === "*" ? "[\\\\w_-]+" : escapeRegexSegment(segment)
+                );
+            const source = `^${patternSegments.join("\\.")}$`;
+            wildcardSources.push(source);
+        } else {
+            exactOrigins.push(origin);
+        }
+    });
+
     const payload =
         typeof content === "string" ? content : JSON.stringify(content);
     const sanitizedPayload = sanitizeForSingleQuotedString(payload);
@@ -90,26 +111,29 @@ module.exports = function generateLoginScript(oauthProvider, message, content) {
 <body>
 <script>
 (function() {
-    var origins = ${JSON.stringify(origins)};
+    var exactOrigins = ${JSON.stringify(exactOrigins)};
+    var wildcardSources = ${JSON.stringify(wildcardSources)};
+    var wildcardRegexes = wildcardSources.map(function(source) {
+        return new RegExp(source);
+    });
 
-    function matchesOrigin(arr, elem) {
-        for (var i = 0; i < arr.length; i++) {
-            var candidate = arr[i];
-            if (candidate.indexOf('*') >= 0) {
-                var regex = new RegExp(candidate.replace(/\./g, '\\\\.').replace(/\*/g, '[\\\\w_-]+'));
-                if (elem.match(regex) !== null) {
-                    return true;
-                }
-            } else if (candidate === elem) {
+    function matchesOrigin(elem) {
+        if (exactOrigins.indexOf(elem) !== -1) {
+            return true;
+        }
+
+        for (var i = 0; i < wildcardRegexes.length; i++) {
+            if (wildcardRegexes[i].test(elem)) {
                 return true;
             }
         }
+
         return false;
     }
 
     function receiveMessage(e) {
         var normalizedOrigin = e.origin.replace('https://', '').replace('http://', '');
-        if (!matchesOrigin(origins, normalizedOrigin)) {
+        if (!matchesOrigin(normalizedOrigin)) {
             console.log('Invalid origin:', e.origin);
             return;
         }
