@@ -5,9 +5,7 @@ backend:
     auth_type: implicit
     app_id: Ov23lien0vEnJZOumzEn
     base_url: science-app-umber.vercel.app
-    site_url: science-app-umber.vercel.app
-    auth_endpoint: oauth/authorize
-    api_root: https://api.github.com
+    auth_endpoint: /auth
     commit_messages:
         create: "Create {{collection}} “{{slug}}”"
         update: "Update {{collection}} “{{slug}}”"
