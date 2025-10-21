@@ -1,5 +1,6 @@
 const path = require(`path`);
 const { spawn } = require(`child_process`);
+const { createProxyMiddleware } = require(`http-proxy-middleware`);
 const { createFilePath } = require(`gatsby-source-filesystem`);
 const {
     POST_CONTENT_TYPES,
@@ -258,6 +259,13 @@ exports.createResolvers = ({ createResolvers }) => {
 
 let proxyProcess = null;
 let proxyCleanupRegistered = false;
+let devProxyRegistered = false;
+
+const proxyPort = process.env.NETLIFY_CMS_PROXY_PORT || "8081";
+const proxyMode = process.env.NETLIFY_CMS_PROXY_MODE || "fs";
+const proxyHost = process.env.NETLIFY_CMS_PROXY_HOST || "127.0.0.1";
+const proxyTarget = `http://${proxyHost}:${proxyPort}`;
+const repoRoot = process.env.GIT_REPO_DIRECTORY || path.resolve(__dirname);
 
 const stopProxyProcess = () => {
     if (proxyProcess && !proxyProcess.killed) {
@@ -310,9 +318,6 @@ const startProxyProcess = (reporter) => {
     const proxyScript = require.resolve(
         "netlify-cms-proxy-server/dist/index.js"
     );
-    const proxyPort = process.env.NETLIFY_CMS_PROXY_PORT || "8081";
-    const proxyMode = process.env.NETLIFY_CMS_PROXY_MODE || "fs";
-    const repoRoot = process.env.GIT_REPO_DIRECTORY || path.resolve(__dirname);
 
     reporter.info(
         `Starting Netlify CMS proxy server on port ${proxyPort} (mode: ${proxyMode})`
@@ -349,6 +354,34 @@ const startProxyProcess = (reporter) => {
     registerProxyCleanup(reporter);
 };
 
-exports.onCreateDevServer = ({ reporter }) => {
+const registerDevProxyRoute = (app, reporter) => {
+    if (!app || devProxyRegistered) {
+        return;
+    }
+
+    if (process.env.NETLIFY_CMS_PROXY_DISABLED === "true") {
+        reporter.info(
+            `Skipping Netlify CMS proxy routing because proxy is disabled`
+        );
+        return;
+    }
+
+    app.use(
+        "/api/v1",
+        createProxyMiddleware({
+            target: `${proxyTarget}`,
+            changeOrigin: true,
+            logLevel: process.env.NETLIFY_CMS_PROXY_LOG_LEVEL || "warn",
+        })
+    );
+
+    devProxyRegistered = true;
+    reporter.info(
+        `Netlify CMS proxy route registered: /api/v1 -> ${proxyTarget}/api/v1`
+    );
+};
+
+exports.onCreateDevServer = ({ app, reporter }) => {
     startProxyProcess(reporter);
+    registerDevProxyRoute(app, reporter);
 };

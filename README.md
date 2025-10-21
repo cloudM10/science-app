@@ -31,6 +31,23 @@ yarn start
 yarn  build
 ```
 
+## Running with Netlify CMS proxy
+
+The project can serve both the static bundle and the Netlify CMS proxy from the same host—useful for local previews and self-hosted production setups without Netlify Identity.
+
+1. Build the site: `npm run build`
+2. Start the bundled server: `npm run serve:cms`
+3. Open `http://localhost:3000/admin/` to access the CMS (no additional authentication required).
+
+Environment variables:
+
+-   `NETLIFY_CMS_PROXY_MODE` – `fs` (default) or `git` mode for the proxy.
+-   `NETLIFY_CMS_PROXY_PORT` – port for the proxy process (default `8081`).
+-   `NETLIFY_CMS_PROXY_HOST` – host for proxy target (default `127.0.0.1`).
+-   `GIT_REPO_DIRECTORY` – repository path for git mode (defaults to project root).
+
+For production deployments, run `npm run serve:cms` on the server that hosts your static files. The script serves the `public/` directory and proxies `/api/v1` to the bundled Netlify CMS proxy so the admin panel works out of the box.
+
 ## Editing content locally without login
 
 Whenever you run the development server (`yarn start` or `gatsby develop`), a Netlify CMS proxy server now starts automatically.
