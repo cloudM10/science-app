@@ -8,7 +8,7 @@ module.exports = {
         },
         openGraphImage: `open-graph-image.png`,
         description: `Сайт кафедри "Машини та обладнання в агропромисловому комплексі" Дніпровського державного аграрно-економічного університету`,
-        siteUrl: `https://science-site-app.netlify.app/`,
+        siteUrl: `https://science-app-umber.vercel.app/`,
         socialLinks: [
             {
                 name: "facebook",

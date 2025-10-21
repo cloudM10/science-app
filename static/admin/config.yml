@@ -1,13 +1,13 @@
 backend:
     name: github
-    repo: cloudM10/science-app    # твой репозиторий
+    repo: cloudM10/science-app
     branch: main
-    auth_type: implicit           # встроенный OAuth flow
-    app_id: Ov23lien0vEnJZOumzEn # Client ID GitHub OAuth App
-    base_url: https://orca-app-xfbmd.ondigitalocean.app
-    auth_endpoint: login/oauth/authorize
+    auth_type: implicit
+    app_id: Ov23lien0vEnJZOumzEn
+    base_url: science-app-umber.vercel.app
+    site_url: science-app-umber.vercel.app
+    auth_endpoint: oauth/authorize
     api_root: https://api.github.com
-    site_domain: orca-app-xfbmd.ondigitalocean.app
     commit_messages:
         create: "Create {{collection}} “{{slug}}”"
         update: "Update {{collection}} “{{slug}}”"
