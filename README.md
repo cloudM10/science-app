@@ -31,6 +31,14 @@ yarn start
 yarn  build
 ```
 
+## Editing content locally without login
+
+Whenever you run the development server (`yarn start` or `gatsby develop`), a Netlify CMS proxy server now starts automatically.
+
+-   It mirrors the behavior of `netlify-cms-proxy-server`, so the `/admin` panel connects directly to your local files with no authentication required.
+-   The proxy listens on port `8081` by default. Override it via `NETLIFY_CMS_PROXY_PORT` before starting the dev server.
+-   Set `NETLIFY_CMS_PROXY_DISABLED=true` if you need to run Gatsby without the proxy (for example, when testing the hosted login flow).
+
 ## Configuration
 
 Within gatsby-config.js, you can specify information about your site (metadata) like the site title and description to properly generate meta tags.

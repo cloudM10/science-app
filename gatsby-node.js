@@ -1,4 +1,5 @@
 const path = require(`path`);
+const { spawn } = require(`child_process`);
 const { createFilePath } = require(`gatsby-source-filesystem`);
 const {
     POST_CONTENT_TYPES,
@@ -253,4 +254,101 @@ exports.createResolvers = ({ createResolvers }) => {
             },
         },
     });
+};
+
+let proxyProcess = null;
+let proxyCleanupRegistered = false;
+
+const stopProxyProcess = () => {
+    if (proxyProcess && !proxyProcess.killed) {
+        proxyProcess.kill();
+    }
+    proxyProcess = null;
+};
+
+const registerProxyCleanup = (reporter) => {
+    if (proxyCleanupRegistered) {
+        return;
+    }
+
+    proxyCleanupRegistered = true;
+
+    const cleanupHandler = () => {
+        stopProxyProcess();
+    };
+
+    process.once("exit", cleanupHandler);
+    process.once("SIGINT", () => {
+        cleanupHandler();
+        process.exit(0);
+    });
+    process.once("SIGTERM", () => {
+        cleanupHandler();
+        process.exit(0);
+    });
+    process.once("SIGUSR2", () => {
+        cleanupHandler();
+        process.kill(process.pid, "SIGUSR2");
+    });
+
+    reporter.info(`Netlify CMS proxy cleanup handlers registered`);
+};
+
+const startProxyProcess = (reporter) => {
+    if (process.env.NETLIFY_CMS_PROXY_DISABLED === "true") {
+        reporter.info(
+            `Netlify CMS proxy server disabled via NETLIFY_CMS_PROXY_DISABLED`
+        );
+        return;
+    }
+
+    if (proxyProcess) {
+        reporter.info(`Netlify CMS proxy server is already running`);
+        return;
+    }
+
+    const proxyScript = require.resolve(
+        "netlify-cms-proxy-server/dist/index.js"
+    );
+    const proxyPort = process.env.NETLIFY_CMS_PROXY_PORT || "8081";
+    const proxyMode = process.env.NETLIFY_CMS_PROXY_MODE || "fs";
+    const repoRoot = process.env.GIT_REPO_DIRECTORY || path.resolve(__dirname);
+
+    reporter.info(
+        `Starting Netlify CMS proxy server on port ${proxyPort} (mode: ${proxyMode})`
+    );
+
+    proxyProcess = spawn(process.execPath, [proxyScript], {
+        cwd: repoRoot,
+        stdio: "inherit",
+        env: {
+            ...process.env,
+            PORT: proxyPort,
+            MODE: proxyMode,
+            GIT_REPO_DIRECTORY: repoRoot,
+        },
+    });
+
+    proxyProcess.on("exit", (code, signal) => {
+        if (code !== null) {
+            reporter.warn(`Netlify CMS proxy server exited with code ${code}`);
+        } else if (signal) {
+            reporter.warn(
+                `Netlify CMS proxy server killed with signal ${signal}`
+            );
+        }
+        proxyProcess = null;
+    });
+
+    proxyProcess.on("error", (error) => {
+        reporter.panic(
+            `Failed to start Netlify CMS proxy server: ${error.message}`
+        );
+    });
+
+    registerProxyCleanup(reporter);
+};
+
+exports.onCreateDevServer = ({ reporter }) => {
+    startProxyProcess(reporter);
 };
