@@ -6,6 +6,7 @@ CMS.init({
     config: {
         backend: {
             name: "git-gateway",
+            branch: "deploy_netlify",
         },
     },
 });
