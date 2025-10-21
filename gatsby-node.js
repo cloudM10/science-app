@@ -1,3 +1,4 @@
+const fs = require("fs");
 const path = require(`path`);
 const { createFilePath } = require(`gatsby-source-filesystem`);
 const {
@@ -253,4 +254,20 @@ exports.createResolvers = ({ createResolvers }) => {
             },
         },
     });
+};
+
+exports.onPostBuild = async ({ reporter }) => {
+    const sourcePath = path.join(__dirname, "public", "admin", "config.yml");
+    const destinationPath = path.join(__dirname, "public", "config.yml");
+
+    try {
+        await fs.promises.copyFile(sourcePath, destinationPath);
+        reporter.info(
+            `Netlify CMS config duplicated to /config.yml for legacy clients.`
+        );
+    } catch (error) {
+        reporter.warn(
+            `Failed to copy Netlify CMS config to /config.yml: ${error.message}`
+        );
+    }
 };
