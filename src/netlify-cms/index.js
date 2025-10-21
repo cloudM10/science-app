@@ -9,7 +9,6 @@ CMS.init({
             repo: "cloudM10/science-app",
             branch: "main",
             auth_type: "implicit",
-            app_id: "Ov23lien0vEnJZOumzEn",
             base_url: "https://orca-app-xfbmd.ondigitalocean.app",
             auth_endpoint: "/auth",
         },
