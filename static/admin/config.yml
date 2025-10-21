@@ -4,7 +4,7 @@ backend:
     branch: main
     auth_type: implicit
     app_id: Ov23lien0vEnJZOumzEn
-    base_url: science-app-umber.vercel.app
+    base_url: https://science-app-umber.vercel.app
     auth_endpoint: /auth
     commit_messages:
         create: "Create {{collection}} “{{slug}}”"
