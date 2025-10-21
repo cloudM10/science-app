@@ -1,5 +1,48 @@
-const REQUIRED_ORIGIN_PATTERN =
-    /^((\*|([\w_-]{2,}))\.)*(([\w_-]{2,})\.)+(\w{2,})(,((\*|([\w_-]{2,}))\.)*(([\w_-]{2,})\.)+(\w{2,}))*$/;
+const LABEL_PATTERN = /^(\*|[\w-]+)$/i;
+const TLD_PATTERN = /^[a-z0-9]{2,}$/i;
+
+function isValidOrigin(origin) {
+    if (!origin) {
+        return false;
+    }
+
+    const [hostPart, portPart] = origin.split(":");
+
+    if (portPart !== undefined) {
+        if (!/^\d{1,5}$/.test(portPart)) {
+            return false;
+        }
+
+        const portNumber = Number(portPart);
+        if (portNumber < 1 || portNumber > 65535) {
+            return false;
+        }
+    }
+
+    if (hostPart === "localhost") {
+        return true;
+    }
+
+    const labels = hostPart.split(".");
+
+    if (labels.length < 2) {
+        return false;
+    }
+
+    const isValidLabelSet = labels.every((segment, index) => {
+        if (!LABEL_PATTERN.test(segment)) {
+            return false;
+        }
+
+        if (index === labels.length - 1) {
+            return TLD_PATTERN.test(segment) && segment !== "*";
+        }
+
+        return true;
+    });
+
+    return isValidLabelSet;
+}
 
 function parseOrigins() {
     const rawOrigins = process.env.ORIGINS;
@@ -7,16 +50,25 @@ function parseOrigins() {
         throw new Error("ORIGINS environment variable must be defined");
     }
 
-    if (!rawOrigins.match(REQUIRED_ORIGIN_PATTERN)) {
-        throw new Error(
-            "ORIGINS must be a comma separated list of allowed origins (without protocol). Wildcards are supported via *"
-        );
-    }
-
-    return rawOrigins
+    const entries = rawOrigins
         .split(",")
         .map((origin) => origin.trim())
         .filter(Boolean);
+
+    if (!entries.length) {
+        throw new Error(
+            "ORIGINS must include at least one hostname (without protocol). Wildcards are supported via *"
+        );
+    }
+
+    const invalidEntry = entries.find((origin) => !isValidOrigin(origin));
+    if (invalidEntry) {
+        throw new Error(
+            `Invalid origin "${invalidEntry}". ORIGINS must be a comma separated list of hostnames without protocol. Wildcards are supported via * and an optional :port may be supplied.`
+        );
+    }
+
+    return entries;
 }
 
 function sanitizeForSingleQuotedString(value) {
