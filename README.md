@@ -110,18 +110,20 @@ Homepage intro, Contact, and About page content can be updated in Markdown forma
 
 # Editing Contents with Netlify CMS
 
-This project is preconfigured to work with Netlify CMS.
-When Netlify CMS makes commits to your repo, Netlify will auto-trigger a rebuild / deploy when new commits are made.
-You’ll need to set up Netlify’s Identity service to authorize users to log in to the CMS.
+The admin panel lives at `/admin/` and now authenticates via GitHub OAuth instead of Netlify Identity. The flow works on any static host that can run a couple of serverless endpoints (for example Vercel, Netlify Functions, Cloudflare Workers, etc.).
 
--   Go to <https://app.netlify.com> > select your website from the list.
--   Go to Identity and click Enable Identity.
--   Click on Invite Users and invite yourself. You will receive an email and you need to accept the invitation to set the password.
--   Now headover to Settings > Identity > Services and Enable Git Gateway.
--   You can also manage who can register and log in to your CMS. Go to Settings > Identity > Registration Registration Preferences. I would prefer to keep it to Invite Only if I am the only one using it.
--   Now, go to to site-name.netlify.app/admin/, and login with your credentials.
+### Configure GitHub OAuth
 
-Once you are in your Netlify CMS, you can navigate to Posts and Pages. Here you will find a list of existing pages and posts.
+1. Create a new GitHub OAuth App (<https://github.com/settings/developers>) using the public URL of your site. Use `/api/callback` as the callback path (for example `https://yourdomain.com/api/callback`).
+2. Copy the **Client ID** and **Client Secret** to your hosting provider as environment variables:
+    - `GITHUB_CLIENT_ID`
+    - `GITHUB_CLIENT_SECRET`
+3. Optionally adjust `GITHUB_OAUTH_SCOPE` (defaults to `repo`, which is required for private repositories).
+4. Deploy the site so the new environment variables are available. When editors visit `/admin/` they’ll be redirected to GitHub, approve access, and land back in the CMS logged in as themselves.
+
+State/nonce data is stored in a short-lived `cms_oauth` cookie, and the resulting GitHub token is returned to Netlify CMS via the `/api/callback` handler. The session cookie is `HttpOnly`, `SameSite=Lax`, and respects HTTPS automatically.
+
+For local development the proxy still starts automatically, so you can access `/admin/` without logging in while running `gatsby develop`.
 
 ## Built with
 
