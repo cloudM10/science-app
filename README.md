@@ -14,21 +14,22 @@ A Minimal & Beautiful Gatsby Personal Blog With Nice Glassmorphism UI.
 
 ## Local Install
 
+yarn start
 ```bash
 # 1. Clone the repository
-git clone https://github.com/vdmemory/science-site-app
+git clone https://github.com/cloudM10/science-app
 
 # 2. Navigate into repository
-cd science-site-app
+cd science-app
 
 # 3. Install the dependencies
-yarn install
+npm install
 
 # 4. Start the development server
-yarn start
+npm run dev
 
-# 5. Start the build mode
-yarn  build
+# 5. Build for production
+npm run build
 ```
 
 ## Configuration
@@ -55,13 +56,42 @@ module.exports = {
 
 ## Deployment
 
-Netlify is a great way to easily deploy sites plus this starter uses Netlify Form for the Contact form.
+The project is configured for Vercel. Once the repository is connected, Vercel will build the Gatsby site and expose the serverless OAuth endpoints under `/api/*`.
 
--   Generate a new repo from this repo which will copy all files from this repo to your newly created repo.
+1. Push your changes to GitHub.
+2. Create (or update) a Vercel project linked to `cloudM10/science-app`.
+3. Add the environment variables listed in [GitHub OAuth provider](#github-oauth-provider-on-vercel).
+4. Trigger a deploy. Gatsby will generate the static site while the OAuth provider is deployed as Vercel serverless functions.
 
--   Go to <https://app.netlify.com>. Once you’ve logged in, click the 'New site from Git' button on your dashboard and choose your newly created repo.
+## GitHub OAuth provider on Vercel
 
--   Follow the prompts, it will build and deploy the new site on Netlify, bringing you to the site dashboard when the build is complete.
+The `/api/auth` and `/api/callback` serverless functions embed the behaviour of [`netlify-cms-github-oauth-provider`](https://github.com/vencax/netlify-cms-github-oauth-provider) so Netlify CMS can authenticate editors when the site is hosted on Vercel.
+
+### 1. Create a GitHub OAuth App
+
+1. Open <https://github.com/settings/developers> and create a new **OAuth App**.
+2. Set the **Authorization callback URL** to `https://<your-domain>/api/callback` (replace with your production domain).
+3. Copy the generated **Client ID** and **Client Secret**.
+
+### 2. Configure Vercel environment variables
+
+Add these variables in the Vercel dashboard (Project Settings → Environment Variables):
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `OAUTH_CLIENT_ID` | ✅ | Client ID from your GitHub OAuth App. |
+| `OAUTH_CLIENT_SECRET` | ✅ | Client Secret from your GitHub OAuth App. |
+| `ORIGINS` | ✅ | Comma-separated list of allowed origins **without protocol**, e.g. `science-app-umber.vercel.app,www.example.com,localhost:8000`. Wildcards (`*.example.com`) are supported. |
+| `REDIRECT_URL` | ✅ | Public callback URL, e.g. `https://science-app-umber.vercel.app/api/callback`. |
+| `SCOPES` | ⛔️ (optional) | Override the default GitHub scopes (`repo,user`). |
+| `AUTH_TARGET` | ⛔️ (optional) | Set to `_blank` to force the login window to open in a new tab. |
+| `GATSBY_NETLIFY_CMS_BASE_URL` | ⛔️ (optional) | Override the OAuth base URL used by the CMS client. Defaults to `https://science-app-umber.vercel.app/api`. |
+
+Deployments automatically pick up the new values—redeploy if you change them.
+
+### 3. Update Netlify CMS config (if domains change)
+
+The CMS backend in `static/admin/config.yml` is preconfigured for `https://science-app-umber.vercel.app/api`. If you switch domains, update the `base_url` (and the optional `GATSBY_NETLIFY_CMS_BASE_URL`) to match the new host.
 
 ## Manually Editing contents
 

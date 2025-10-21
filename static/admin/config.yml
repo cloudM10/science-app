@@ -2,8 +2,8 @@ backend:
     name: github
     repo: cloudM10/science-app
     branch: main
-    base_url: https://science-app-umber.vercel.app
-    auth_endpoint: /auth
+    base_url: https://science-app-umber.vercel.app/api
+    auth_endpoint: auth
     commit_messages:
         create: "Create {{collection}} “{{slug}}”"
         update: "Update {{collection}} “{{slug}}”"
