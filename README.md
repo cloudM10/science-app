@@ -90,6 +90,18 @@ Add these variables in the Vercel dashboard (Project Settings → Environment Va
 
 Deployments automatically pick up the new values—redeploy if you change them.
 
+#### Runtime overrides (advanced)
+
+During local development (or if you need to hot-swap the OAuth endpoint without rebuilding), you can provide the base URL at runtime. The CMS bootstrap script looks for the value in the following order:
+
+1. `window.GATSBY_NETLIFY_CMS_BASE_URL`
+2. `window.__ENV__.GATSBY_NETLIFY_CMS_BASE_URL`
+3. `window.__RUNTIME_CONFIG__.GATSBY_NETLIFY_CMS_BASE_URL`
+4. `<meta name="netlify-cms-base-url" content="..." />`
+5. The build-time `process.env.GATSBY_NETLIFY_CMS_BASE_URL`
+
+This makes it easy to inject a custom value from a snippet in `static/admin/index.html`, a small runtime config file, or your hosting platform if it supports tag substitutions.
+
 ### 3. Update Netlify CMS config (if domains change)
 
 The CMS backend in `static/admin/config.yml` is preconfigured for `https://science-app-umber.vercel.app/api`. If you switch domains, update the `base_url` (and the optional `GATSBY_NETLIFY_CMS_BASE_URL`) to match the new host.

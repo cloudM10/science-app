@@ -158,5 +158,12 @@ module.exports = {
             },
         },
         `gatsby-plugin-react-helmet`,
+        {
+            resolve: `gatsby-plugin-netlify-cms`,
+            options: {
+                manualInit: true,
+                modulePath: `${__dirname}/src/netlify-cms/index.js`,
+            },
+        },
     ],
 };

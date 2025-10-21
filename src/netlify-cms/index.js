@@ -5,6 +5,48 @@ import registerPdfLinkWidget from "./pdf-link-widget";
 
 const CONFIG_PATH = "/admin/config.yml";
 
+function resolveBaseUrlOverride() {
+    const globalObject =
+        typeof window !== "undefined"
+            ? window
+            : typeof globalThis !== "undefined"
+            ? globalThis
+            : {};
+
+    const fromWindow =
+        (typeof globalObject.GATSBY_NETLIFY_CMS_BASE_URL === "string" &&
+            globalObject.GATSBY_NETLIFY_CMS_BASE_URL.trim()) ||
+        (globalObject.__ENV__ &&
+            typeof globalObject.__ENV__.GATSBY_NETLIFY_CMS_BASE_URL ===
+                "string" &&
+            globalObject.__ENV__.GATSBY_NETLIFY_CMS_BASE_URL.trim()) ||
+        (globalObject.__RUNTIME_CONFIG__ &&
+            typeof globalObject.__RUNTIME_CONFIG__
+                .GATSBY_NETLIFY_CMS_BASE_URL === "string" &&
+            globalObject.__RUNTIME_CONFIG__.GATSBY_NETLIFY_CMS_BASE_URL.trim()) ||
+        (typeof globalObject.NETLIFY_CMS_BASE_URL === "string" &&
+            globalObject.NETLIFY_CMS_BASE_URL.trim());
+
+    let fromMeta;
+
+    if (typeof document !== "undefined") {
+        const metaTag = document.querySelector(
+            'meta[name="netlify-cms-base-url"]'
+        );
+        fromMeta = metaTag?.getAttribute("content")?.trim();
+    }
+
+    const fromBuild =
+        (typeof process !== "undefined" &&
+            typeof process.env?.GATSBY_NETLIFY_CMS_BASE_URL === "string" &&
+            process.env.GATSBY_NETLIFY_CMS_BASE_URL.trim()) ||
+        (typeof process !== "undefined" &&
+            typeof process.env?.NETLIFY_CMS_BASE_URL === "string" &&
+            process.env.NETLIFY_CMS_BASE_URL.trim());
+
+    return fromWindow || fromMeta || fromBuild;
+}
+
 async function bootstrapCMS() {
     try {
         const response = await fetch(CONFIG_PATH, { cache: "no-cache" });
@@ -20,7 +62,7 @@ async function bootstrapCMS() {
             throw new Error("Config file is empty or invalid");
         }
 
-        const baseUrlOverride = process.env.GATSBY_NETLIFY_CMS_BASE_URL;
+        const baseUrlOverride = resolveBaseUrlOverride();
         if (baseUrlOverride) {
             parsedConfig.backend = parsedConfig.backend || {};
             parsedConfig.backend.base_url = baseUrlOverride;
