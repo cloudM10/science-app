@@ -84,6 +84,7 @@ module.exports = {
             options: {
                 modulePath: `${__dirname}/src/netlify-cms/index.js`,
                 enableIdentityWidget: false,
+                manualInit: true,
                 publicPath: "admin",
                 htmlTitle: "Content Manager",
                 includeRobots: false,
