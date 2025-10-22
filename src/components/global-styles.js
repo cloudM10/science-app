@@ -109,15 +109,17 @@ body::-webkit-scrollbar-track {
     --color-text-placeholder: #aaaaaa;
     
     --color-primary: #ff6f61;
-  --color-primary-hover: #ff6f61;
+  --color-primary-hover: #e55a4d;
     --color-secondary: #4a90e2;
     --color-accent: #50e3c2;
     
     --color-background: #ccdcfbff;
     --color-background-secondary: #f9f9f9;
+    --color-background-tertiary: #f6e0e2ff;
     --color-background-inverse: #252526;
   
     --color-border: #e0e0e0;
+    --color-border-secondary: #f8a6afff;
 }
 
 body {

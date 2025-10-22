@@ -158,10 +158,17 @@ const ContactCopy = styled.div`
 
     & p {
         font-size: var(--size-400);
+        margin-bottom: 0.5rem;
     }
 
     & a {
-        color: #f43f5e;
+        color: var(--color-primary);
+        text-decoration: underline;
+    }
+
+    & p > span.gatsby-resp-image-wrapper {
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
     }
 `;
 
@@ -193,8 +200,8 @@ const FormGroup = styled.div`
         font-family: inherit;
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
-        background-color: #fecdd3;
-        border: 1px solid #fda4af;
+        background-color: var(--color-background-tertiary);
+        border: 1px solid var(--color-border-secondary);
     }
 
     & textarea:focus,
@@ -229,11 +236,16 @@ const FormButton = styled.button`
     padding: 0.45rem;
     padding-left: 1.25rem;
     padding-right: 1.5rem;
-    background-color: #f43f5e;
+    background-color: var(--color-primary);
     color: #fafafa;
     border: none;
     text-transform: uppercase;
     border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--color-primary-hover);
+    }
 `;
 
 export const pageQuery = graphql`
