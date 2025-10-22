@@ -3,10 +3,6 @@ fileName: contacts
 template: contacts-template
 title: Контакти
 ---
-### К﻿онтакти
-
-
-
 **Адреса:**
 Вулиця Сергія Єфремова, 25
 Дніпро, Україна 
